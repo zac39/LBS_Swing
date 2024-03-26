@@ -5,7 +5,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
 
 public class tuMa extends JFrame implements ActionListener, MouseListener { //
 
