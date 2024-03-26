@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
-public class tuMa extends JFrame implements ActionListener, MouseListener { //test git
+public class tuMa extends JFrame implements ActionListener, MouseListener {
 
     private static final int WIDTH = 1500;
     private static final int HEIGHT = 1000;
