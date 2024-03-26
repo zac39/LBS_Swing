@@ -4,32 +4,38 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 public class bone1{
-    private int dx;
-    private int dy;
     private JPanel pt;
-    private JLabel bone;
+    private JLabel bone, cuore;
+    private int hp;
 
-    public bone1(int dx, int dy, JPanel pt) {
-        this.dx = dx;
-        this.dy = dy;
+    public bone1(JPanel pt, JLabel cuore, int hp) {
         this.pt = pt;
+        this.cuore=cuore;
+        this.hp=hp;
     }
     
-    public void bone() {
+    public void bone(int nVolte) {
 
-        ImageIcon i = new ImageIcon("Assets/Images/bone64.png");
-        bone = new JLabel(rotateImageIcon(i,90));
-        bone.setBounds(dx-100, dy, 60, 10);
+        for (int j = 0; j <nVolte; j++) {
+            int dx=cuore.getX();
+            int dy=cuore.getY();
 
-        pt.add(bone);
-        while(bone.getX()<1100){
-            bone.setLocation(bone.getX()+1,dy);
-            try {
-                Thread.sleep(5);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+            ImageIcon i = new ImageIcon("Assets/Images/bone64.png");
+            bone = new JLabel(rotateImageIcon(i,90));
+            bone.setBounds(dx-100, dy, 60, 10);
+
+            pt.add(bone);
+            while(bone.getX()<1100){
+                bone.setLocation(bone.getX()+1,dy);
+                coolision(bone);
+                try {
+                    Thread.sleep(5);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
+
     }
 
     static private ImageIcon rotateImageIcon(ImageIcon picture, double angle) {
@@ -48,4 +54,15 @@ public class bone1{
         return picture;
     }
 
+   private void coolision(JLabel obtacle) {
+        if(cuore.getBounds().intersects(obtacle.getBounds())){
+            hp-=1;
+            System.out.println(hp);
+            try {
+                Thread.sleep(5);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }

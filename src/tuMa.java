@@ -109,8 +109,8 @@ public class tuMa extends JFrame implements ActionListener, MouseListener { //
     }
 
     private void att1(){
-        bone1 bone1=new bone1(k.getDx(),k.getDy(),panel);
-        bone1.bone();
+        bone1 bone1=new bone1(panel,heart,hp);
+        bone1.bone(5);
     }
 
     @Override
