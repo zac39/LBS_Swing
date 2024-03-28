@@ -1,5 +1,5 @@
 public class Main {
     public static void main(String[] args) {
-        tuMa tuMaJF = new tuMa();
+        TuMa tuMaJF = new TuMa();
     }
 }

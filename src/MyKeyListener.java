@@ -10,7 +10,7 @@ public class MyKeyListener implements KeyListener {
     private final int velocitaBase = 3;
     private static int velocitaX = 0;
     private static int velocitaY = 0;
-    private Set<Integer> keysPressed = new HashSet<>();
+    private final Set<Integer> keysPressed = new HashSet<>();
 
     /*
     Il codice private Set<Integer> keysPressed = new HashSet<>(); crea un insieme (Set) chiamato keysPressed che tiene traccia dei codici dei tasti premuti.
@@ -68,8 +68,19 @@ public class MyKeyListener implements KeyListener {
     }
 
     public static void aggiornaMovimento() {
-        int nuovaX = label.getX() + velocitaX;
-        int nuovaY = label.getY() + velocitaY;
+        int nuovaX = label.getX();
+        int nuovaY = label.getY();
+
+        // Aggiorna le coordinate x del cuore
+        if (nuovaX + velocitaX >= 0 && nuovaX + velocitaX + label.getWidth() <= 590) {
+            nuovaX += velocitaX;
+        }
+
+        // Aggiorna le coordinate y del cuore
+        if (nuovaY + velocitaY >= 0 && nuovaY + velocitaY + label.getHeight() <= 290) {
+            nuovaY += velocitaY;
+        }
+
         label.setLocation(nuovaX, nuovaY);
     }
 }

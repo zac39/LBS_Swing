@@ -1,9 +1,9 @@
+package Altro;
 
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentListener;
 import javax.swing.*;
 
 /*
@@ -117,7 +117,7 @@ public class es1boos extends JFrame implements ActionListener{
             }
 
             if (premuto==20 && b.getName().equals("angl")){
-                tuMa snas = new tuMa();
+                //Altro.tuMa snas = new Altro.tuMa();
                 chiudi();
             }            
         }
