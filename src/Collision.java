@@ -1,12 +1,12 @@
 import javax.swing.*;
 
-public class collision implements Runnable {
+public class Collision implements Runnable {
 
     private int hp;
-    private JLabel cuore, obstacle;
-    private boolean active = true;
+    private final JLabel cuore, obstacle;
+    private final boolean active = true;
 
-    public collision(int hp, JLabel cuore, JLabel obstacle) {
+    public Collision(int hp, JLabel cuore, JLabel obstacle) {
         this.hp = hp;
         this.cuore = cuore;
         this.obstacle = obstacle;

@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+
 public class BackJPanel extends JPanel {
 
     private final Image backgroundImage;

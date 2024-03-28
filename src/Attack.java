@@ -3,24 +3,22 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
-public class bone1 implements Runnable {
-    private JPanel pt;
+public class Attack implements Runnable {
+    private final JPanel pt;
     private JLabel bone, cuore;
-    private int nVolte,hp;
+    private final int nAttacchi,hp;
+    private Thread collisonT;
 
-    private Thread collison;
-    private Thread diocane;
-
-    public bone1(JPanel pt, JLabel cuore, int nVolte, int hp) {
+    public Attack(JPanel pt, JLabel cuore, int nAttacchi, int hp) {
         this.pt = pt;
         this.cuore = cuore;
-        this.nVolte = nVolte;
+        this.nAttacchi = nAttacchi;
         this.hp=hp;
     }
 
     public void run() {
 
-        for (int j = 0; j < nVolte; j++) {
+        for (int j = 0; j < nAttacchi; j++) {
             int dx = cuore.getX();
             int dy = cuore.getY();
 
@@ -29,8 +27,8 @@ public class bone1 implements Runnable {
             bone.setBounds(dx - 100, dy, 60, 10);
 
             pt.add(bone);
-            diocane=new Thread(new collision(hp,cuore,bone));
-            diocane.start();
+            collisonT=new Thread(new Collision(hp,cuore,bone));
+            collisonT.start();
             while (bone.getX() < 1100) {
                 bone.setLocation(bone.getX() + 1, dy);
                 try {
@@ -39,7 +37,7 @@ public class bone1 implements Runnable {
                     throw new RuntimeException(e);
                 }
             }
-            diocane.interrupt();
+            collisonT.interrupt();
         }
 
     }

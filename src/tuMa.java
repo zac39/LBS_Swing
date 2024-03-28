@@ -6,7 +6,7 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 
-public class tuMa extends JFrame implements ActionListener, MouseListener { //
+public class tuMa extends JFrame implements ActionListener, MouseListener {
 
     private static final int WIDTH = 1500;
     private static final int HEIGHT = 1000;
@@ -19,15 +19,10 @@ public class tuMa extends JFrame implements ActionListener, MouseListener { //
 
     private JLabel sans, heart, border, bone;
     private BackJPanel panel;
-    //private JPanel panel;
-    private Font font;
     private int hp = 100;
     private boolean gameRunning;
-    private Clip clip;
-    private AudioInputStream audio;
-    private Image dirtImg;
+    private MyKeyListener keyListener;
 
-    private keylis k;
     public tuMa() {
         initializeComponents();
         createLayout();
@@ -42,21 +37,21 @@ public class tuMa extends JFrame implements ActionListener, MouseListener { //
         bone = new JLabel(new ImageIcon(IMAGE_PATH + "bone64.png"));
         border = new JLabel();
 
-        dirtImg = null;
-        try{
-            Image dirtImg = ImageIO.read(getClass().getResourceAsStream(IMAGE_PATH + "dirt.png"));
-        } catch (IOException e){
+        Image dirtImg1 = null;
+        try {
+            Image dirtImg = ImageIO.read(new File(IMAGE_PATH + "dirt.png"));
+        } catch (IOException e) {
             System.err.println("Error loading dirt image: " + e.getMessage());
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             System.out.println(e);
         }
 
-        panel = new BackJPanel(dirtImg);
+        panel = new BackJPanel(dirtImg1);
         panel.setLayout(null);
 
-        k=new keylis(550,600,heart);
+        keyListener = new MyKeyListener(heart);
 
-        font = new Font("sans", Font.PLAIN, 25);
+        Font font = new Font("sans", Font.PLAIN, 25);
         gameRunning = true;
 
         setSize(WIDTH, HEIGHT);
@@ -65,8 +60,9 @@ public class tuMa extends JFrame implements ActionListener, MouseListener { //
         border.setBorder(BorderFactory.createLineBorder(Color.WHITE, 25));
         heart.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
+        Clip clip = null;
         try {
-            audio = AudioSystem.getAudioInputStream(new File(MUSIC_PATH + "sans.wav").getAbsoluteFile());
+            AudioInputStream audio = AudioSystem.getAudioInputStream(new File(MUSIC_PATH + "sans.wav").getAbsoluteFile());
             clip = AudioSystem.getClip();
             clip.open(audio);
             clip.start();
@@ -77,7 +73,7 @@ public class tuMa extends JFrame implements ActionListener, MouseListener { //
 
     private void createLayout() {
         sans.setBounds(550, 0, 400, 450);
-        heart.setBounds(k.getDx(), k.getDy(), HEART_WIDTH, HEART_HEIGHT);
+        heart.setBounds(200, 200, HEART_WIDTH, HEART_HEIGHT);
         bone.setBounds(750, 600, BONE_WIDTH, BONE_HEIGHT);
         border.setBounds(300, 500, 900, 450);
 
@@ -89,9 +85,9 @@ public class tuMa extends JFrame implements ActionListener, MouseListener { //
     }
 
     private void addListeners() {
-        addKeyListener(k);
+        addKeyListener(keyListener);
         addMouseListener(this);
-        this.setResizable(true);
+        setResizable(true);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -100,6 +96,8 @@ public class tuMa extends JFrame implements ActionListener, MouseListener { //
         new Thread(() -> {
             while (gameRunning) {
                 try {
+                    MyKeyListener.aggiornaMovimento();
+
                     Thread.sleep(10);
                 } catch (InterruptedException e) {
                     System.out.println("Errore non so quale");
@@ -109,17 +107,13 @@ public class tuMa extends JFrame implements ActionListener, MouseListener { //
     }
 
     private void att1(){
-        Thread bone1=new Thread(new bone1(panel,heart,5,hp));
+        Thread bone1 = new Thread(new Attack(panel,heart,8,hp));
         bone1.start();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
 
-    }
-
-    public static void main(String[] args) {
-        tuMa tuMaJF = new tuMa();
     }
 
     @Override
