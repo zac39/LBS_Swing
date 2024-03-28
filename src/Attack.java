@@ -43,8 +43,8 @@ public class Attack implements Runnable {
     private void launchAttack() {
         int dy = (int)(Math.random() * (280 - 20 + 1)) + 20;
 
-        ImageIcon i = new ImageIcon("Assets/Images/bone64.png");
-        JLabel bone = new JLabel(rotateImageIcon(i, 90));
+        ImageIcon i = new ImageIcon("Assets/Images/Bone64Hor.png");
+        JLabel bone = new JLabel(i);
         bone.setBounds(10, dy, 60, 10);
 
         pt.add(bone);
@@ -69,6 +69,7 @@ public class Attack implements Runnable {
 
     }
 
+    /*
     static private ImageIcon rotateImageIcon(ImageIcon picture, double angle) {
         int w = picture.getIconWidth();
         int h = picture.getIconHeight();
@@ -83,4 +84,5 @@ public class Attack implements Runnable {
         picture = new ImageIcon(image);
         return picture;
     }
+    */
 }
