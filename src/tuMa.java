@@ -109,16 +109,14 @@ public class tuMa extends JFrame implements ActionListener, MouseListener { //
     }
 
     private void att1(){
-        bone1 bone1=new bone1(panel,heart,hp);
-        bone1.bone(5);
+        Thread bone1=new Thread(new bone1(panel,heart,5,hp));
+        bone1.start();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
 
     }
-
-
 
     public static void main(String[] args) {
         tuMa tuMaJF = new tuMa();

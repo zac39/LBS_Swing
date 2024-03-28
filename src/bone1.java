@@ -3,37 +3,43 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
-public class bone1{
+public class bone1 implements Runnable {
     private JPanel pt;
     private JLabel bone, cuore;
-    private int hp;
+    private int nVolte,hp;
 
-    public bone1(JPanel pt, JLabel cuore, int hp) {
+    private Thread collison;
+    private Thread diocane;
+
+    public bone1(JPanel pt, JLabel cuore, int nVolte, int hp) {
         this.pt = pt;
-        this.cuore=cuore;
+        this.cuore = cuore;
+        this.nVolte = nVolte;
         this.hp=hp;
     }
-    
-    public void bone(int nVolte) {
 
-        for (int j = 0; j <nVolte; j++) {
-            int dx=cuore.getX();
-            int dy=cuore.getY();
+    public void run() {
+
+        for (int j = 0; j < nVolte; j++) {
+            int dx = cuore.getX();
+            int dy = cuore.getY();
 
             ImageIcon i = new ImageIcon("Assets/Images/bone64.png");
-            bone = new JLabel(rotateImageIcon(i,90));
-            bone.setBounds(dx-100, dy, 60, 10);
+            bone = new JLabel(rotateImageIcon(i, 90));
+            bone.setBounds(dx - 100, dy, 60, 10);
 
             pt.add(bone);
-            while(bone.getX()<1100){
-                bone.setLocation(bone.getX()+1,dy);
-                coolision(bone);
+            diocane=new Thread(new collision(hp,cuore,bone));
+            diocane.start();
+            while (bone.getX() < 1100) {
+                bone.setLocation(bone.getX() + 1, dy);
                 try {
                     Thread.sleep(5);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
+            diocane.interrupt();
         }
 
     }
@@ -43,26 +49,14 @@ public class bone1{
         int h = picture.getIconHeight();
         BufferedImage image = new BufferedImage(h, w, BufferedImage.TYPE_INT_RGB); // other options, see api
         Graphics2D g2 = image.createGraphics();
-        double x = (h - w)/2.0;
-        double y = (w - h)/2.0;
+        double x = (h - w) / 2.0;
+        double y = (w - h) / 2.0;
         AffineTransform at = AffineTransform.getTranslateInstance(x, y);
-        at.rotate(Math.toRadians(angle), w/2.0, h/2.0);
+        at.rotate(Math.toRadians(angle), w / 2.0, h / 2.0);
         g2.drawImage(picture.getImage(), at, null);
         g2.dispose();
         picture = new ImageIcon(image);
 
         return picture;
-    }
-
-   private void coolision(JLabel obtacle) {
-        if(cuore.getBounds().intersects(obtacle.getBounds())){
-            hp-=1;
-            System.out.println(hp);
-            try {
-                Thread.sleep(5);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 }
