@@ -41,7 +41,7 @@ public class Attack implements Runnable {
     }
 
     private void launchAttack() {
-        int dy = (int)(Math.random() * (280 - 20 + 1)) + 20;
+        int dy = (int)(Math.random() * (280 - 20 + 1)) + 20; // cambio
 
         ImageIcon i = new ImageIcon("Assets/Images/Bone64Hor.png");
         JLabel bone = new JLabel(i);
