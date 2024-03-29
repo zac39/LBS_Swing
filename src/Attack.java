@@ -8,24 +8,32 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger; // An int value that may be updated atomically. https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/AtomicInteger.html
 
 public class Attack extends AWTHelper implements Runnable {
-    private final JPanel jpMain;
-    private final JLabel cuore;
+    private final JPanel jpAttTot;
+    private JPanel jpGastSx, jpGastDx;
     private final AtomicInteger hp;
     private final Timer attackTimer;
     private int attackCounter, nAtt;
     private final AtomicBoolean gameRunning;
     private final CountDownLatch latch;
+    private JLayeredPane jlpAtt;
+    private final JLabel jlHeart;
 
 
-    public Attack(JPanel jpMain, JLabel cuore, AtomicInteger hp, AtomicBoolean gameRunning, CountDownLatch latch, int nAtt) {
-        this.jpMain = jpMain;
-        this.cuore = cuore;
+
+
+
+    public Attack(JPanel jpAttTot, AtomicInteger hp, AtomicBoolean gameRunning, CountDownLatch latch, int nAtt) {
+        this.jpAttTot = jpAttTot;
         this.hp = hp;
         this.attackCounter = 0;
         this.attackTimer = new Timer();
         this.gameRunning = gameRunning;
         this.nAtt=nAtt;
         this.latch = latch;
+        jlpAtt= (JLayeredPane) jpAttTot.getComponent(1);
+        jlHeart= (JLabel) jlpAtt.getComponent(0);
+        jpGastSx= (JPanel) jpAttTot.getComponent(0);
+        jpGastDx= (JPanel) jpAttTot.getComponent(2);
     }
 
     public void run() {
@@ -63,13 +71,13 @@ public class Attack extends AWTHelper implements Runnable {
         JLabel bone = new JLabel(i);
         bone.setBounds(10, dy, 60, 10);
 
-        jpMain.add(bone, JLayeredPane.POPUP_LAYER);
+        jlpAtt.add(bone, JLayeredPane.POPUP_LAYER);
         AtomicBoolean active = new AtomicBoolean(true);
-        Thread collisionT = new Thread(new Collision(hp, cuore, bone, gameRunning, active));
+        Thread collisionT = new Thread(new Collision(hp, jlHeart, bone, gameRunning, active));
         collisionT.start();
 
         new Thread(() -> {
-            while (bone.getX() < pt.getWidth()) {
+            while (bone.getX() < jlpAtt.getWidth()) {
                 bone.setLocation(bone.getX() + 1, dy);
                 synchronized (this) {
                     try {
@@ -80,7 +88,7 @@ public class Attack extends AWTHelper implements Runnable {
                     }
                 }
             }
-            pt.remove(bone);
+            jlpAtt.remove(bone);
             active.set(false);
             collisionT.interrupt();
 
@@ -92,14 +100,26 @@ public class Attack extends AWTHelper implements Runnable {
         laser.setOpaque(true);
         laser.setBackground(Color.white);
         laser.setBounds(x,y,0,height);
-        pt.add(laser, JLayeredPane.POPUP_LAYER);
+        jlpAtt.add(laser, JLayeredPane.POPUP_LAYER);
+
+        JLabel gasterBlaster = new JLabel();
+        gasterBlaster = new JLabel(new ImageIcon("Assets/Images/GasterBlasterClosedSx.png"));
+        gasterBlaster.setBounds(150,y,100,height);
 
         AtomicBoolean active = new AtomicBoolean(true);
-        Thread collisionT = new Thread(new Collision(hp, cuore, laser, gameRunning, active));
+        Thread collisionT = new Thread(new Collision(hp, jlHeart, laser, gameRunning, active));
         collisionT.start();
 
+        jpGastSx.add(gasterBlaster);
+        jpGastSx.repaint();
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        JLabel finalGasterBlaster = gasterBlaster;
         new Thread(() -> {
-            while (laser.getWidth() < pt.getWidth()) {
+            while (laser.getWidth() < jlpAtt.getWidth()) {
                 laser.setSize(laser.getWidth() + 1, laser.getHeight());
                 synchronized (this) {
                     try {
@@ -115,9 +135,10 @@ public class Attack extends AWTHelper implements Runnable {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            pt.remove(laser);
-            pt.repaint();
-            pt.revalidate();
+            jlpAtt.remove(laser);
+            jpGastSx.remove(finalGasterBlaster);
+            jlpAtt.repaint();
+            jlpAtt.revalidate();
             active.set(false);
             collisionT.interrupt();
 

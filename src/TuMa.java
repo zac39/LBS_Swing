@@ -175,7 +175,7 @@ public class TuMa extends JFrame implements MouseListener {
     private void startBattle() {
         CountDownLatch latch = new CountDownLatch(1);
 
-        Thread bone1 = new Thread(new Attack(jlpAtt,jlHeart,hp,gameRunning,latch,1));
+        Thread bone1 = new Thread(new Attack(jpAttTot,hp,gameRunning,latch,1));
         bone1.start();
 
         try {
@@ -185,7 +185,7 @@ public class TuMa extends JFrame implements MouseListener {
             System.out.println(e);
         }
 
-        Thread blaster = new Thread(new Attack(jlpAtt,jlHeart,hp,gameRunning,latch,2));
+        Thread blaster = new Thread(new Attack(jpAttTot,hp,gameRunning,latch,2));
         blaster.start();
     }
 
