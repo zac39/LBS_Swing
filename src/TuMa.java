@@ -22,6 +22,7 @@ public class TuMa extends JFrame implements MouseListener {
 
     // Variabili
     private BackJPanel jpMain, jpSans, jpAtt;
+    private JPanel jpGastSx,jpGastUp,jpGastDx;
     private JLabel jlSans, jlHeart, jlHp;
     private MyKeyListener keyListener;
     private final AtomicBoolean gameRunning = new AtomicBoolean(true);
@@ -44,6 +45,10 @@ public class TuMa extends JFrame implements MouseListener {
         jpMain = new BackJPanel(setBackground("background.png"));
         jpSans = new BackJPanel(setBackground("transparentBack.png"));
         jpAtt = new BackJPanel(setBackground("transparentBack.png"));
+
+        jpGastSx = new JPanel();
+        jpGastUp = new JPanel();
+        jpGastDx = new JPanel();
 
         jpSans.setOpaque(false);
         jpAtt.setOpaque(false);

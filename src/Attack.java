@@ -41,18 +41,19 @@ public class Attack implements Runnable {
     }
 
     private void launchAttack() {
-        int dy = (int)(Math.random() * (280 - 20 + 1)) + 20; // cambio
+        int dy = (int)(Math.random() * (280 - 20 + 1)) + 20;
 
         ImageIcon i = new ImageIcon("Assets/Images/Bone64Hor.png");
         JLabel bone = new JLabel(i);
         bone.setBounds(10, dy, 60, 10);
 
         pt.add(bone);
-        Thread collisionT = new Thread(new Collision(hp, cuore, bone, gameRunning));
+        AtomicBoolean active = new AtomicBoolean(true);
+        Thread collisionT = new Thread(new Collision(hp, cuore, bone, gameRunning, active));
         collisionT.start();
 
         new Thread(() -> {
-            while (bone.getX() < pt.getWidth()) {
+            while (bone.getX() < 300) {
                 bone.setLocation(bone.getX() + 1, dy);
                 synchronized (this) {
                     try {
@@ -64,25 +65,10 @@ public class Attack implements Runnable {
                 }
             }
             pt.remove(bone);
+            active.set(false);
             collisionT.interrupt();
+
         }).start();
 
     }
-
-    /*
-    static private ImageIcon rotateImageIcon(ImageIcon picture, double angle) {
-        int w = picture.getIconWidth();
-        int h = picture.getIconHeight();
-        BufferedImage image = new BufferedImage(h, w, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2 = image.createGraphics();
-        double x = (h - w) / 2.0;
-        double y = (w - h) / 2.0;
-        AffineTransform at = AffineTransform.getTranslateInstance(x, y);
-        at.rotate(Math.toRadians(angle), w / 2.0, h / 2.0);
-        g2.drawImage(picture.getImage(), at, null);
-        g2.dispose();
-        picture = new ImageIcon(image);
-        return picture;
-    }
-    */
 }

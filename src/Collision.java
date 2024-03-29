@@ -7,18 +7,19 @@ public class Collision implements Runnable {
     private final JLabel cuore, obstacle;
     // private final boolean active; // Volatile -> modificata da più thread contemporaneamente
     private final AtomicBoolean gameRunning;
+    private final AtomicBoolean active;
 
-    public Collision(AtomicInteger hp, JLabel cuore, JLabel obstacle, AtomicBoolean gameRunning) {
+    public Collision(AtomicInteger hp, JLabel cuore, JLabel obstacle, AtomicBoolean gameRunning, AtomicBoolean active) {
         this.hp = hp;
         this.cuore = cuore;
         this.obstacle = obstacle;
-        // this.active = true;
+        this.active = active;
         this.gameRunning = gameRunning;
     }
 
     @Override
     public void run() {
-        while (true) {
+        while (active.get()) {
             synchronized (this) {
                 try {
                     // Wait for 10 milliseconds or until notified
