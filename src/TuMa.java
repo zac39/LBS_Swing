@@ -22,7 +22,7 @@ public class TuMa extends JFrame implements MouseListener {
     // Variabili
     private JLayeredPane jlpAtt;
     private BackJPanel jpMain, jpSans;
-    private JPanel jpGastSx,jpGastUp,jpGastDx,jpAttTot;
+    private JPanel jpGastSx, jpGastUp, jpGastDx, jpAttTot;
     private JLabel jlSans, jlHeart, jlHp;
     private MyKeyListener keyListener;
     private final AtomicBoolean gameRunning = new AtomicBoolean(true);
@@ -86,11 +86,9 @@ public class TuMa extends JFrame implements MouseListener {
         jpSans.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         jlpAtt.setBorder(BorderFactory.createLineBorder(Color.white, 10));
-        //jpAttTot.setBorder(BorderFactory.createLineBorder(Color.green, 10));
-
-        //jpGastSx.setBorder(BorderFactory.createLineBorder(Color.magenta, 10));
-        //jpGastDx.setBorder(BorderFactory.createLineBorder(Color.magenta, 10));
-
+        // jpAttTot.setBorder(BorderFactory.createLineBorder(Color.green, 10));
+        // jpGastSx.setBorder(BorderFactory.createLineBorder(Color.magenta, 10));
+        // jpGastDx.setBorder(BorderFactory.createLineBorder(Color.magenta, 10));
         // jlHeart.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
         jpSans.setMaximumSize(new Dimension(200, 250));

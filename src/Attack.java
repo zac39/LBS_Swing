@@ -3,10 +3,11 @@ import java.awt.*;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger; // An int value that may be updated atomically. https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/AtomicInteger.html
 
-public class Attack implements Runnable {
+public class Attack extends AWTHelper implements Runnable {
     private final JLayeredPane pt;
     private final JLabel cuore;
     private final AtomicInteger hp;
@@ -51,7 +52,7 @@ public class Attack implements Runnable {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                attack2(0,140,130);
+                attack2(0,160,130);
         }
     }
 
@@ -86,7 +87,7 @@ public class Attack implements Runnable {
         }).start();
     }
 
-    private void attack2(int x,int y, int height){
+    private void attack2(int x, int y, int height){
         JLabel laser = new JLabel();
         laser.setOpaque(true);
         laser.setBackground(Color.white);
