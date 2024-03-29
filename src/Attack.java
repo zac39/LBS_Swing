@@ -55,13 +55,13 @@ public class Attack extends AWTHelper implements Runnable {
                     break;
 
                 case (2):
-                    attack2(0, 10, 130);
+                        attack2(0, 10, 130);
                     try {
-                        TimeUnit.SECONDS.sleep(6);
+                        TimeUnit.SECONDS.sleep(1);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-                    attack2(0, 160, 130);
+                    attack2(0, 150, 135);
             }
         }
     }
@@ -118,7 +118,11 @@ public class Attack extends AWTHelper implements Runnable {
 
         jpGastSx.add(gasterBlaster);
         jpGastSx.repaint();
-
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         gasterBlaster.setIcon(new ImageIcon("Assets/Images/GasterBlasterOpenedSx.png"));
 
         try {
@@ -136,20 +140,28 @@ public class Attack extends AWTHelper implements Runnable {
                 laser.repaint(); // Aggiorna il laser dopo aver modificato le dimensioni
                 synchronized (this) {
                     try {
-                        // Wait for 2 milliseconds or until notified
-                        wait(2);
+                        // Wait for 1 milliseconds or until notified
+                        wait(1);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
                 }
             }
             gasterBlaster.setIcon(new ImageIcon("Assets/Images/GasterBlasterClosedSx.png"));
+
             try {
-                TimeUnit.SECONDS.sleep(1);
+                TimeUnit.MILLISECONDS.sleep(500);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
             jlpAtt.remove(laser);
+            jpMain.repaint();
+            jpMain.revalidate();
+            try {
+                TimeUnit.MILLISECONDS.sleep(500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             jpGastSx.remove(gasterBlaster);
             jpMain.repaint();
             jpMain.revalidate();
