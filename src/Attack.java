@@ -3,6 +3,7 @@ import java.awt.*;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger; // An int value that may be updated atomically. https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/AtomicInteger.html
 
@@ -14,7 +15,6 @@ public class Attack implements Runnable {
     private int attackCounter, nAtt;
     private final AtomicBoolean gameRunning;
     private final CountDownLatch latch;
-
 
     public Attack(JPanel pt, JLabel cuore, AtomicInteger hp, AtomicBoolean gameRunning, CountDownLatch latch, int nAtt) {
         this.pt = pt;
@@ -45,7 +45,13 @@ public class Attack implements Runnable {
                 break;
 
             case(2):
-                attack2();
+                attack2(0,10,130);
+                try {
+                    TimeUnit.SECONDS.sleep(6);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                attack2(0,140,130);
         }
     }
 
@@ -80,11 +86,11 @@ public class Attack implements Runnable {
         }).start();
     }
 
-    private void attack2(){
+    private void attack2(int x,int y, int height){
         JLabel laser = new JLabel();
         laser.setOpaque(true);
         laser.setBackground(Color.white);
-        laser.setBounds(0,20,0,130);
+        laser.setBounds(x,y,0,height);
         pt.add(laser);
 
         AtomicBoolean active = new AtomicBoolean(true);
@@ -93,15 +99,20 @@ public class Attack implements Runnable {
 
         new Thread(() -> {
             while (laser.getWidth() < pt.getWidth()) {
-                laser.setSize(laser.getWidth() + 1, laser.getY());
+                laser.setSize(laser.getWidth() + 1, laser.getHeight());
                 synchronized (this) {
                     try {
                         // Wait for 5 milliseconds or until notified
-                        wait(5);
+                        wait(2);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
                 }
+            }
+            try {
+                TimeUnit.SECONDS.sleep(4);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
             pt.remove(laser);
             pt.repaint();
@@ -112,5 +123,4 @@ public class Attack implements Runnable {
         }).start();
 
     }
-
 }
