@@ -4,10 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -41,19 +39,11 @@ public class TuMa extends JFrame implements MouseListener {
 
     private void initializeComponents() {
         jlSans = new JLabel(new ImageIcon(IMAGE_PATH + "Sans.png"));
-        jlHeart = new JLabel();
-
-        try {
-            BufferedImage originalImage = ImageIO.read(new File(IMAGE_PATH + "Heart.png"));
-            BufferedImage coloredImage = changeImageColor(originalImage);
-            jlHeart.setIcon(new ImageIcon(coloredImage));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        jlHeart = new JLabel(new ImageIcon(IMAGE_PATH + "Heart.png"));
 
         jlHp = new JLabel("HP: " + hp.get());
 
-        jpMain = new BackJPanel(setBackground("background.png"));
+        jpMain = new BackJPanel(setBackground("Black.png"));
         jpSans = new BackJPanel(setBackground("transparentBack.png"));
 
         jlpAtt = new JLayeredPane();
@@ -88,28 +78,24 @@ public class TuMa extends JFrame implements MouseListener {
         jpSans.setLayout(new BoxLayout(jpSans, BoxLayout.Y_AXIS));
         jlpAtt.setLayout(null);
         jpAttTot.setLayout(new GridBagLayout());
-
-        GridBagConstraints gbc = new GridBagConstraints();
+        jpGastDx.setLayout(null);
+        jpGastSx.setLayout(null);
 
         jpAttTot.setAlignmentX(Component.CENTER_ALIGNMENT);
         jlpAtt.setAlignmentX(Component.CENTER_ALIGNMENT);
         jpSans.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         jlpAtt.setBorder(BorderFactory.createLineBorder(Color.white, 10));
-        jpAttTot.setBorder(BorderFactory.createLineBorder(Color.green, 10));
+        //jpAttTot.setBorder(BorderFactory.createLineBorder(Color.green, 10));
 
-        jpGastSx.setBorder(BorderFactory.createLineBorder(Color.magenta, 10));
-        jpGastDx.setBorder(BorderFactory.createLineBorder(Color.magenta, 10));
-
-        // Impostazione dei vincoli per far riempire i pannelli in altezza
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
+        //jpGastSx.setBorder(BorderFactory.createLineBorder(Color.magenta, 10));
+        //jpGastDx.setBorder(BorderFactory.createLineBorder(Color.magenta, 10));
 
         // jlHeart.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
         jpSans.setMaximumSize(new Dimension(200, 250));
         jlpAtt.setMinimumSize(new Dimension(600, 300));
-        jpAttTot.setMaximumSize(new Dimension(800, 300));
+        jpAttTot.setMaximumSize(new Dimension(900, 300));
 
         jlHeart.setBounds(300, 150, 32, 32);
 
@@ -127,10 +113,17 @@ public class TuMa extends JFrame implements MouseListener {
 
         jpSans.add(jlSans);
 
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        // Impostazione dei vincoli per far riempire i pannelli in altezza
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+
+
         // Aggiunta di jpGastSx nella prima colonna
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weightx = 0.1; // Larghezza di 100 pixel
+        gbc.weightx = 0.35; // Larghezza di 100 pixel
         jpAttTot.add(jpGastSx, gbc);
 
         // Aggiunta di jlpAtt nella seconda colonna
@@ -140,7 +133,7 @@ public class TuMa extends JFrame implements MouseListener {
 
         // Aggiunta di jpGastDx nella terza colonna
         gbc.gridx = 2;
-        gbc.weightx = 0.1; // Larghezza di 100 pixel
+        gbc.weightx = 0.35; // Larghezza di 100 pixel
         jpAttTot.add(jpGastDx, gbc);
 
         jlpAtt.add(jlHeart, JLayeredPane.DEFAULT_LAYER);
@@ -222,6 +215,7 @@ public class TuMa extends JFrame implements MouseListener {
         return backImg;
     }
 
+    /*
     private BufferedImage changeImageColor(BufferedImage originalImage) {
         Random random = new Random();
         float hue = random.nextFloat();
@@ -241,11 +235,7 @@ public class TuMa extends JFrame implements MouseListener {
 
         return coloredImage;
     }
-
-
-
-
-
+     */
 
 
 
