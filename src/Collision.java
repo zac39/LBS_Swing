@@ -18,7 +18,7 @@ public class Collision implements Runnable {
 
     @Override
     public void run() {
-        while (active.get()) {
+        while (active.get() && gameRunning.get()) {
             synchronized (this) {
                 try {
                     // Wait for 10 milliseconds or until notified

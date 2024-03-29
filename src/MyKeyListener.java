@@ -6,10 +6,11 @@ import java.util.Set;
 
 public class MyKeyListener implements KeyListener {
 
-    private static JLabel label;
+    private static JLabel heart;
     private final int velocitaBase = 3;
     private static int velocitaX = 0;
     private static int velocitaY = 0;
+    private static JLayeredPane jlpAtt;
     private final Set<Integer> keysPressed = new HashSet<>();
 
     /*
@@ -23,8 +24,9 @@ public class MyKeyListener implements KeyListener {
     In sostanza, l'insieme keysPressed è utilizzato per tenere traccia di quali tasti sono attualmente premuti, consentendo una gestione più complessa e dinamica dei movimenti del personaggio.
     */
 
-    public MyKeyListener(JLabel label) {
-        this.label = label;
+    public MyKeyListener(JLabel heart, JLayeredPane jlpAtt) {
+        this.heart = heart;
+        this.jlpAtt = jlpAtt;
     }
 
     @Override
@@ -68,19 +70,33 @@ public class MyKeyListener implements KeyListener {
     }
 
     public static void aggiornaMovimento() {
-        int nuovaX = label.getX();
-        int nuovaY = label.getY();
+        int nuovaX = heart.getX() + velocitaX;
+        int nuovaY = heart.getY() + velocitaY;
 
-        // Aggiorna le coordinate x del cuore
-        if (nuovaX + velocitaX >= 0 && nuovaX + velocitaX + label.getWidth() <= 590) {
-            nuovaX += velocitaX;
+        // Dimensioni del pannello jplAtt
+        int jplAttWidth = jlpAtt.getWidth() - 10; // larghezza - bordo
+        int jplAttHeight = jlpAtt.getHeight() - 10;
+
+        // bordo sinistro
+        if (nuovaX < 10) {
+            nuovaX = 10;
         }
 
-        // Aggiorna le coordinate y del cuore
-        if (nuovaY + velocitaY >= 0 && nuovaY + velocitaY + label.getHeight() <= 290) {
-            nuovaY += velocitaY;
+        // bordo superiore
+        if (nuovaY < 10) {
+            nuovaY = 10;
         }
 
-        label.setLocation(nuovaX, nuovaY);
+        // bordo destro
+        if (nuovaX + heart.getWidth() > jplAttWidth) {
+            nuovaX = jplAttWidth - heart.getWidth();
+        }
+
+        // bordo inferiore
+        if (nuovaY + heart.getHeight() > jplAttHeight) {
+            nuovaY = jplAttHeight - heart.getHeight();
+        }
+
+        heart.setLocation(nuovaX, nuovaY);
     }
 }

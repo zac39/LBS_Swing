@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger; // An int value that may be updated atomically. https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/AtomicInteger.html
 
 public class Attack implements Runnable {
-    private final JPanel pt;
+    private final JLayeredPane pt;
     private final JLabel cuore;
     private final AtomicInteger hp;
     private final Timer attackTimer;
@@ -16,7 +16,7 @@ public class Attack implements Runnable {
     private final CountDownLatch latch;
 
 
-    public Attack(JPanel pt, JLabel cuore, AtomicInteger hp, AtomicBoolean gameRunning, CountDownLatch latch, int nAtt) {
+    public Attack(JLayeredPane pt, JLabel cuore, AtomicInteger hp, AtomicBoolean gameRunning, CountDownLatch latch, int nAtt) {
         this.pt = pt;
         this.cuore = cuore;
         this.hp = hp;
@@ -56,7 +56,7 @@ public class Attack implements Runnable {
         JLabel bone = new JLabel(i);
         bone.setBounds(10, dy, 60, 10);
 
-        pt.add(bone);
+        pt.add(bone, JLayeredPane.POPUP_LAYER);
         AtomicBoolean active = new AtomicBoolean(true);
         Thread collisionT = new Thread(new Collision(hp, cuore, bone, gameRunning, active));
         collisionT.start();
@@ -85,12 +85,11 @@ public class Attack implements Runnable {
         laser.setOpaque(true);
         laser.setBackground(Color.white);
         laser.setBounds(0,20,0,130);
-        pt.add(laser);
+        pt.add(laser, JLayeredPane.POPUP_LAYER);
 
         AtomicBoolean active = new AtomicBoolean(true);
         Thread collisionT = new Thread(new Collision(hp, cuore, laser, gameRunning, active));
         collisionT.start();
-
         new Thread(() -> {
             while (laser.getWidth() < pt.getWidth()) {
                 laser.setSize(laser.getWidth() + 1, laser.getY());
