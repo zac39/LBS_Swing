@@ -5,7 +5,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Collision implements Runnable {
     private final AtomicInteger hp;
     private final JLabel cuore, obstacle;
-    // private final boolean active; // Volatile -> modificata da più thread contemporaneamente
     private final AtomicBoolean gameRunning;
     private final AtomicBoolean active;
 
@@ -30,7 +29,6 @@ public class Collision implements Runnable {
             }
             if (cuore.getBounds().intersects(obstacle.getBounds())) {
                 hp.decrementAndGet();
-                // System.out.println(hp);
                 if (hp.get() <= 0) {
                     gameRunning.set(false);
                 }

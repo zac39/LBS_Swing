@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean; // Thread-proof
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -99,7 +100,6 @@ public class TuMa extends JFrame implements MouseListener {
             System.out.println("Formato del font non valido: " + e.getMessage());
         }
 
-        // jlHp.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         jpAtt.add(jlHeart);
         jpSans.add(jlSans);
@@ -139,9 +139,21 @@ public class TuMa extends JFrame implements MouseListener {
         }).start();
     }
 
-    private void startBattle(){
-        Thread bone1 = new Thread(new Attack(jpAtt,jlHeart,hp,gameRunning,2));
+    private void startBattle() {
+        CountDownLatch latch = new CountDownLatch(1);
+
+        Thread bone1 = new Thread(new Attack(jpAtt,jlHeart,hp,gameRunning,latch,1));
         bone1.start();
+
+        try {
+            // Attende fino a quando il conteggio non raggiunge zero
+            latch.await();
+        } catch (InterruptedException e) {
+            System.out.println(e);
+        }
+
+        Thread blaster = new Thread(new Attack(jpAtt,jlHeart,hp,gameRunning,latch,2));
+        blaster.start();
     }
 
     private void gameOver() {
@@ -187,6 +199,8 @@ public class TuMa extends JFrame implements MouseListener {
     }
         @Override
         public void mousePressed(MouseEvent e) {
+            System.out.println(Thread.activeCount());
+
             JPanel panelClicked = (JPanel) jpMain.getComponentAt(e.getX(), e.getY());
 
             if (panelClicked != null) {
