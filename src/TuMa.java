@@ -13,8 +13,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class TuMa extends JFrame implements MouseListener {
 
     // Costanti
-    private static final int WIDTH = 1024;
-    private static final int HEIGHT = 768;
+    private static final int WIDTH = 1280;
+    private static final int HEIGHT = 960;
     private static final String IMAGE_PATH = "Assets/Images/";
     private static final String MUSIC_PATH = "Assets/Audio/Music/";
     private static final String FONT_PATH = "Assets/Font/";
@@ -58,6 +58,7 @@ public class TuMa extends JFrame implements MouseListener {
         jpAttTot.setOpaque(false);
         jpGastSx.setOpaque(false);
         jpGastDx.setOpaque(false);
+        jpGastUp.setOpaque(false);
 
         keyListener = new MyKeyListener(jlHeart, jlpAtt);
 
@@ -80,20 +81,22 @@ public class TuMa extends JFrame implements MouseListener {
         jpAttTot.setLayout(new GridBagLayout());
         jpGastDx.setLayout(null);
         jpGastSx.setLayout(null);
+        jpGastUp.setLayout(null);
 
         jpAttTot.setAlignmentX(Component.CENTER_ALIGNMENT);
         jlpAtt.setAlignmentX(Component.CENTER_ALIGNMENT);
         jpSans.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         jlpAtt.setBorder(BorderFactory.createLineBorder(Color.white, 10));
-        // jpAttTot.setBorder(BorderFactory.createLineBorder(Color.green, 10));
-        // jpGastSx.setBorder(BorderFactory.createLineBorder(Color.magenta, 10));
-        // jpGastDx.setBorder(BorderFactory.createLineBorder(Color.magenta, 10));
+        jpAttTot.setBorder(BorderFactory.createLineBorder(Color.green, 10));
+        jpGastSx.setBorder(BorderFactory.createLineBorder(Color.magenta, 10));
+        jpGastDx.setBorder(BorderFactory.createLineBorder(Color.magenta, 10));
+        jpGastUp.setBorder(BorderFactory.createLineBorder(Color.magenta, 10));
         // jlHeart.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
         jpSans.setMaximumSize(new Dimension(200, 250));
         jlpAtt.setMinimumSize(new Dimension(600, 300));
-        jpAttTot.setMaximumSize(new Dimension(900, 300));
+        jpAttTot.setMaximumSize(new Dimension(900, 500));
 
         jlHeart.setBounds(300, 150, 32, 32);
 
@@ -114,13 +117,13 @@ public class TuMa extends JFrame implements MouseListener {
         GridBagConstraints gbc = new GridBagConstraints();
 
         // Impostazione dei vincoli per far riempire i pannelli in altezza
-        gbc.weighty = 1.0;
+        gbc.weighty = 0.5;
         gbc.fill = GridBagConstraints.BOTH;
 
 
         // Aggiunta di jpGastSx nella prima colonna
         gbc.gridx = 0;
-        gbc.gridy = 0;
+        gbc.gridy = 1;
         gbc.weightx = 0.35; // Larghezza di 100 pixel
         jpAttTot.add(jpGastSx, gbc);
 
@@ -133,6 +136,12 @@ public class TuMa extends JFrame implements MouseListener {
         gbc.gridx = 2;
         gbc.weightx = 0.35; // Larghezza di 100 pixel
         jpAttTot.add(jpGastDx, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.weighty = 0.35;
+        jpAttTot.add(jpGastUp, gbc);
 
         jlpAtt.add(jlHeart, JLayeredPane.DEFAULT_LAYER);
 

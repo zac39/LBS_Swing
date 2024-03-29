@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger; // An int value that may be updated atomically. https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/AtomicInteger.html
 
 public class Attack extends AWTHelper implements Runnable {
-    private final JPanel jpMain;
+    private final JLayeredPane jpMain;
     private final JLabel cuore;
     private final AtomicInteger hp;
     private final Timer attackTimer;
@@ -17,7 +17,7 @@ public class Attack extends AWTHelper implements Runnable {
     private final CountDownLatch latch;
 
 
-    public Attack(JPanel jpMain, JLabel cuore, AtomicInteger hp, AtomicBoolean gameRunning, CountDownLatch latch, int nAtt) {
+    public Attack(JLayeredPane jpMain, JLabel cuore, AtomicInteger hp, AtomicBoolean gameRunning, CountDownLatch latch, int nAtt) {
         this.jpMain = jpMain;
         this.cuore = cuore;
         this.hp = hp;
@@ -69,7 +69,7 @@ public class Attack extends AWTHelper implements Runnable {
         collisionT.start();
 
         new Thread(() -> {
-            while (bone.getX() < pt.getWidth()) {
+            while (bone.getX() < jpMain.getWidth()) {
                 bone.setLocation(bone.getX() + 1, dy);
                 synchronized (this) {
                     try {
@@ -80,7 +80,7 @@ public class Attack extends AWTHelper implements Runnable {
                     }
                 }
             }
-            pt.remove(bone);
+            jpMain.remove(bone);
             active.set(false);
             collisionT.interrupt();
 
@@ -92,14 +92,14 @@ public class Attack extends AWTHelper implements Runnable {
         laser.setOpaque(true);
         laser.setBackground(Color.white);
         laser.setBounds(x,y,0,height);
-        pt.add(laser, JLayeredPane.POPUP_LAYER);
+        jpMain.add(laser, JLayeredPane.POPUP_LAYER);
 
         AtomicBoolean active = new AtomicBoolean(true);
         Thread collisionT = new Thread(new Collision(hp, cuore, laser, gameRunning, active));
         collisionT.start();
 
         new Thread(() -> {
-            while (laser.getWidth() < pt.getWidth()) {
+            while (laser.getWidth() < jpMain.getWidth()) {
                 laser.setSize(laser.getWidth() + 1, laser.getHeight());
                 synchronized (this) {
                     try {
@@ -115,9 +115,9 @@ public class Attack extends AWTHelper implements Runnable {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            pt.remove(laser);
-            pt.repaint();
-            pt.revalidate();
+            jpMain.remove(laser);
+            jpMain.repaint();
+            jpMain.revalidate();
             active.set(false);
             collisionT.interrupt();
 
