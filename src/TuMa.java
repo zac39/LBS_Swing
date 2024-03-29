@@ -195,6 +195,17 @@ public class TuMa extends JFrame implements MouseListener {
         }).start();
     }
 
+    private void gameOver() {
+        clip.stop();
+        removeAll();
+        repaint();
+        revalidate();
+
+        setVisible(false);
+        dispose();
+        Restart restart = new Restart();
+    }
+
     private void startBattle() {
         CountDownLatch latch = new CountDownLatch(1);
 
@@ -211,89 +222,6 @@ public class TuMa extends JFrame implements MouseListener {
         Thread blaster = new Thread(new Attack(jpMain,hp,gameRunning,latch,2));
         blaster.start();
     }
-
-    private void setBlackScreen() {
-        SwingUtilities.invokeLater(() -> {
-            clip.stop();
-
-            try {
-                AudioInputStream audio = AudioSystem.getAudioInputStream(new File(SOUND_PATH + "SoulBreak.wav").getAbsoluteFile());
-                clip = AudioSystem.getClip();
-                clip.open(audio);
-                clip.start();
-            } catch (IOException | LineUnavailableException | UnsupportedAudioFileException ex) {
-                System.out.println("Errore nella riproduzione, controllare il formato audio o la presenza di esso");
-            }
-
-            JLabel cuoreRotto = new JLabel(new ImageIcon(IMAGE_PATH + "BrokenHeart.png"));
-            cuoreRotto.setBounds((WIDTH / 2) - 16, (HEIGHT / 2) - 16, 32, 32);
-
-            JLabel goGaster = new JLabel(new ImageIcon(IMAGE_PATH + "goGaster.png"));
-            goGaster.setBounds((WIDTH / 2) - 40, (HEIGHT / 3) - 104, 80, 208);
-
-            JLabel jlGay = null;
-            try {
-                File fontFile = new File(FONT_PATH + "Undertale.ttf");
-                Font undertaleFont = Font.createFont(Font.TRUETYPE_FONT, fontFile);
-                undertaleFont = undertaleFont.deriveFont(Font.PLAIN, 28);
-                jlGay = new JLabel("Gay");
-                jlGay.setFont(undertaleFont);
-                jlGay.setForeground(Color.white);
-                jlGay.setBounds(goGaster.getX() + 90, goGaster.getY(), 50, 50);
-                jlGay.setOpaque(false);
-            } catch (IOException e) {
-                System.out.println("Errore durante il caricamento del font: " + e.getMessage());
-            } catch (FontFormatException e) {
-                System.out.println("Formato del font non valido: " + e.getMessage());
-            }
-
-            jpMain.removeAll();
-            jpMain.revalidate();
-            jpMain.repaint();
-
-            cuoreRotto.setOpaque(false);
-            goGaster.setOpaque(false);
-
-            jpMain.setLayout(null);
-            jpMain.add(goGaster);
-            jpMain.add(jlGay);
-            jpMain.add(cuoreRotto);
-        });
-    }
-
-
-
-
-    private void gameOver() {
-        setBlackScreen();
-
-
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                timer.cancel();
-                showGameOverMessage();
-            }
-        }, 2500);
-    }
-
-    private void showGameOverMessage() {
-        setVisible(false);
-        dispose();
-
-        try {
-            AudioInputStream audio = AudioSystem.getAudioInputStream(new File(MUSIC_PATH + "Determination.wav").getAbsoluteFile());
-            clip = AudioSystem.getClip();
-            clip.open(audio);
-            clip.start();
-        } catch (IOException | LineUnavailableException | UnsupportedAudioFileException ex) {
-            System.out.println("Errore nella riproduzione, controllare il formato audio o la presenza di esso");
-        }
-        JOptionPane.showMessageDialog(null, "Coglione hai perso", "Game Over", JOptionPane.ERROR_MESSAGE);
-        System.exit(0);
-    }
-
 
     private Image setBackground(String file) {
         Image backImg = null;
