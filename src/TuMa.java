@@ -135,7 +135,7 @@ public class TuMa extends JFrame implements MouseListener {
     }
 
     private void startBattle(){
-        Thread bone1 = new Thread(new Attack(jpAtt,jlHeart,25,hp,gameRunning));
+        Thread bone1 = new Thread(new Attack(jpAtt,jlHeart,hp,gameRunning,2));
         bone1.start();
     }
 
