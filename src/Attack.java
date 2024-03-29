@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger; // An int value that may be updated atomically. https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/AtomicInteger.html
 
 public class Attack extends AWTHelper implements Runnable {
-    private final JLayeredPane pt;
+    private final JPanel jpMain;
     private final JLabel cuore;
     private final AtomicInteger hp;
     private final Timer attackTimer;
@@ -17,8 +17,8 @@ public class Attack extends AWTHelper implements Runnable {
     private final CountDownLatch latch;
 
 
-    public Attack(JLayeredPane pt, JLabel cuore, AtomicInteger hp, AtomicBoolean gameRunning, CountDownLatch latch, int nAtt) {
-        this.pt = pt;
+    public Attack(JPanel jpMain, JLabel cuore, AtomicInteger hp, AtomicBoolean gameRunning, CountDownLatch latch, int nAtt) {
+        this.jpMain = jpMain;
         this.cuore = cuore;
         this.hp = hp;
         this.attackCounter = 0;
@@ -63,7 +63,7 @@ public class Attack extends AWTHelper implements Runnable {
         JLabel bone = new JLabel(i);
         bone.setBounds(10, dy, 60, 10);
 
-        pt.add(bone, JLayeredPane.POPUP_LAYER);
+        jpMain.add(bone, JLayeredPane.POPUP_LAYER);
         AtomicBoolean active = new AtomicBoolean(true);
         Thread collisionT = new Thread(new Collision(hp, cuore, bone, gameRunning, active));
         collisionT.start();
