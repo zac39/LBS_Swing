@@ -6,6 +6,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -17,6 +19,7 @@ public class TuMa extends JFrame implements MouseListener {
     private static final int HEIGHT = 960;
     private static final String IMAGE_PATH = "Assets/Images/";
     private static final String MUSIC_PATH = "Assets/Audio/Music/";
+    private static final String SOUND_PATH = "Assets/Audio/Sounds/";
     private static final String FONT_PATH = "Assets/Font/";
 
     // Variabili
@@ -53,6 +56,17 @@ public class TuMa extends JFrame implements MouseListener {
         jpGastDx = new JPanel();
         jpAttTot = new JPanel();
 
+        jlSans.setName("jlSans");
+        jlHeart.setName("jlHeart");
+        jlHp.setName("jlHp");
+        jpMain.setName("jpMain");
+        jpSans.setName("jpSans");
+        jlpAtt.setName("jlpAtt");
+        jpGastSx.setName("jpGastSx");
+        jpGastUp.setName("jpGastUp");
+        jpGastDx.setName("jpGastDx");
+        jpAttTot.setName("jpAttTot");
+
         jpSans.setOpaque(false);
         jlpAtt.setOpaque(false);
         jpAttTot.setOpaque(false);
@@ -88,10 +102,10 @@ public class TuMa extends JFrame implements MouseListener {
         jpSans.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         jlpAtt.setBorder(BorderFactory.createLineBorder(Color.white, 10));
-        jpAttTot.setBorder(BorderFactory.createLineBorder(Color.green, 10));
-        jpGastSx.setBorder(BorderFactory.createLineBorder(Color.magenta, 10));
-        jpGastDx.setBorder(BorderFactory.createLineBorder(Color.magenta, 10));
-        jpGastUp.setBorder(BorderFactory.createLineBorder(Color.magenta, 10));
+        //jpAttTot.setBorder(BorderFactory.createLineBorder(Color.green, 10));
+        //jpGastSx.setBorder(BorderFactory.createLineBorder(Color.magenta, 10));
+        //jpGastDx.setBorder(BorderFactory.createLineBorder(Color.magenta, 10));
+        //jpGastUp.setBorder(BorderFactory.createLineBorder(Color.magenta, 10));
         // jlHeart.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
         jpSans.setMaximumSize(new Dimension(200, 250));
@@ -184,7 +198,7 @@ public class TuMa extends JFrame implements MouseListener {
     private void startBattle() {
         CountDownLatch latch = new CountDownLatch(1);
 
-        Thread bone1 = new Thread(new Attack(jpAttTot,hp,gameRunning,latch,1));
+        Thread bone1 = new Thread(new Attack(jpMain,hp,gameRunning,latch,1));
         bone1.start();
 
         try {
@@ -194,19 +208,92 @@ public class TuMa extends JFrame implements MouseListener {
             System.out.println(e);
         }
 
-        Thread blaster = new Thread(new Attack(jpAttTot,hp,gameRunning,latch,2));
+        Thread blaster = new Thread(new Attack(jpMain,hp,gameRunning,latch,2));
         blaster.start();
     }
 
-    private void gameOver() {
+    private void setBlackScreen() {
         SwingUtilities.invokeLater(() -> {
-            setVisible(false); // Fa cagare perchè non chiude letteralmente il gioco
             clip.stop();
-            JOptionPane.showMessageDialog(null, "Coglione hai perso", "Game Over", JOptionPane.ERROR_MESSAGE);
-            System.exit(0);
-        });
 
+            try {
+                AudioInputStream audio = AudioSystem.getAudioInputStream(new File(SOUND_PATH + "SoulBreak.wav").getAbsoluteFile());
+                clip = AudioSystem.getClip();
+                clip.open(audio);
+                clip.start();
+            } catch (IOException | LineUnavailableException | UnsupportedAudioFileException ex) {
+                System.out.println("Errore nella riproduzione, controllare il formato audio o la presenza di esso");
+            }
+
+            JLabel cuoreRotto = new JLabel(new ImageIcon(IMAGE_PATH + "BrokenHeart.png"));
+            cuoreRotto.setBounds((WIDTH / 2) - 16, (HEIGHT / 2) - 16, 32, 32);
+
+            JLabel goGaster = new JLabel(new ImageIcon(IMAGE_PATH + "goGaster.png"));
+            goGaster.setBounds((WIDTH / 2) - 40, (HEIGHT / 3) - 104, 80, 208);
+
+            JLabel jlGay = null;
+            try {
+                File fontFile = new File(FONT_PATH + "Undertale.ttf");
+                Font undertaleFont = Font.createFont(Font.TRUETYPE_FONT, fontFile);
+                undertaleFont = undertaleFont.deriveFont(Font.PLAIN, 28);
+                jlGay = new JLabel("Gay");
+                jlGay.setFont(undertaleFont);
+                jlGay.setForeground(Color.white);
+                jlGay.setBounds(goGaster.getX() + 90, goGaster.getY(), 50, 50);
+                jlGay.setOpaque(false);
+            } catch (IOException e) {
+                System.out.println("Errore durante il caricamento del font: " + e.getMessage());
+            } catch (FontFormatException e) {
+                System.out.println("Formato del font non valido: " + e.getMessage());
+            }
+
+            jpMain.removeAll();
+            jpMain.revalidate();
+            jpMain.repaint();
+
+            cuoreRotto.setOpaque(false);
+            goGaster.setOpaque(false);
+
+            jpMain.setLayout(null);
+            jpMain.add(goGaster);
+            jpMain.add(jlGay);
+            jpMain.add(cuoreRotto);
+        });
     }
+
+
+
+
+    private void gameOver() {
+        setBlackScreen();
+
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                timer.cancel();
+                showGameOverMessage();
+            }
+        }, 2500);
+    }
+
+    private void showGameOverMessage() {
+        setVisible(false);
+        dispose();
+
+        try {
+            AudioInputStream audio = AudioSystem.getAudioInputStream(new File(MUSIC_PATH + "Determination.wav").getAbsoluteFile());
+            clip = AudioSystem.getClip();
+            clip.open(audio);
+            clip.start();
+        } catch (IOException | LineUnavailableException | UnsupportedAudioFileException ex) {
+            System.out.println("Errore nella riproduzione, controllare il formato audio o la presenza di esso");
+        }
+        JOptionPane.showMessageDialog(null, "Coglione hai perso", "Game Over", JOptionPane.ERROR_MESSAGE);
+        System.exit(0);
+    }
+
 
     private Image setBackground(String file) {
         Image backImg = null;
@@ -222,27 +309,12 @@ public class TuMa extends JFrame implements MouseListener {
         return backImg;
     }
 
-    /*
-    private BufferedImage changeImageColor(BufferedImage originalImage) {
-        Random random = new Random();
-        float hue = random.nextFloat();
 
-        BufferedImage coloredImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
-        for (int y = 0; y < originalImage.getHeight(); y++) {
-            for (int x = 0; x < originalImage.getWidth(); x++) {
-                int rgb = originalImage.getRGB(x, y);
-                float[] hsb = new float[3];
-                Color.RGBtoHSB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, hsb);
-                hsb[0] = hue;
-                int newRGB = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
-                coloredImage.setRGB(x, y, newRGB);
-            }
-        }
 
-        return coloredImage;
-    }
-     */
+
+
+
 
 
 
