@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Attack extends AWTHelper implements Runnable {
     private final JPanel jpMain;
-    private JPanel jpGastSx, jpGastDx;
+    private JPanel jpGastSx, jpGastDx, jpGastUp;
     private final AtomicInteger hp;
     private final Timer attackTimer;
     private int attackCounter, nAtt;
@@ -34,6 +34,7 @@ public class Attack extends AWTHelper implements Runnable {
         jlHeart = (JLabel) findChildComponentByName(jpMain, "jlHeart");
         jpGastSx = (JPanel) findChildComponentByName(jpMain, "jpGastSx");
         jpGastDx = (JPanel) findChildComponentByName(jpMain, "jpGastDx");
+        jpGastUp = (JPanel) findChildComponentByName(jpMain, "jpGastUp");
     }
 
     public void run() {
@@ -61,7 +62,14 @@ public class Attack extends AWTHelper implements Runnable {
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-                    attack2(0, 150, 135);
+                    attack2sx(0, 150, 135);
+                    try {
+                        TimeUnit.SECONDS.sleep(1);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    attack2up(100, 0, 100);
+                    attack2up(300, 0, 100);
             }
         }
     }
@@ -101,6 +109,14 @@ public class Attack extends AWTHelper implements Runnable {
     }
 
     private void attack2(int x, int y, int height) {
+        /*
+        String direc = "";
+        int versoLaser=0;
+        if (direction=="sx"){
+            direc=direction;
+            versoLaser=1;
+        }
+         */
         JLabel laser = new JLabel();
         laser.setOpaque(true);
         laser.setBackground(Color.white);
@@ -109,7 +125,7 @@ public class Attack extends AWTHelper implements Runnable {
         jlpAtt.add(laser, JLayeredPane.POPUP_LAYER);
 
         JLabel gasterBlaster = new JLabel(new ImageIcon("Assets/Images/GasterBlasterClosedSx.png"));
-        gasterBlaster.setBounds(jpGastSx.getWidth() - 128, y, 128, 128);
+        gasterBlaster.setBounds(jpGastSx.getWidth() - 128, y, 128, height);
         //gasterBlaster.setBorder(BorderFactory.createLineBorder(Color.CYAN, 5));
 
         AtomicBoolean active = new AtomicBoolean(true);
@@ -170,4 +186,152 @@ public class Attack extends AWTHelper implements Runnable {
 
         }).start();
     }
+
+    public void attack2sx(int x, int y, int height){
+        final int[] largehzzax = {jlpAtt.getWidth()};
+        final int[] larghezza = {0};
+        JLabel laser = new JLabel();
+        laser.setOpaque(true);
+        laser.setBackground(Color.white);
+        laser.setBounds(jlpAtt.getWidth(), y, 0, height);
+        //laser.setBorder(BorderFactory.createLineBorder(Color.blue, 5));
+        jlpAtt.add(laser, JLayeredPane.POPUP_LAYER);
+
+        JLabel gasterBlaster = new JLabel(new ImageIcon("Assets/Images/GasterBlasterClosedDx.png"));
+        gasterBlaster.setBounds(0, y, 128, height);
+        //gasterBlaster.setBorder(BorderFactory.createLineBorder(Color.CYAN, 5));
+
+        AtomicBoolean active = new AtomicBoolean(true);
+        Thread collisionT = new Thread(new Collision(hp, jlHeart, laser, gameRunning, active));
+        collisionT.start();
+
+        jpGastDx.add(gasterBlaster);
+        jpGastDx.repaint();
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        gasterBlaster.setIcon(new ImageIcon("Assets/Images/GasterBlasterOpenedDx.png"));
+
+        try {
+            AudioInputStream audio = AudioSystem.getAudioInputStream(new File("Assets/Audio/Sounds/Blaster.wav").getAbsoluteFile());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audio);
+            clip.start();
+        } catch (IOException | LineUnavailableException | UnsupportedAudioFileException ex) {
+            System.out.println("Errore nella riproduzione, controllare il formato audio o la presenza di esso");
+        }
+
+        new Thread(() -> {
+            while (laser.getX() != 0) {
+                largehzzax[0] = largehzzax[0] -1;
+                larghezza[0] +=1;
+                laser.setBounds(largehzzax[0], y, larghezza[0] , height);
+                laser.repaint(); // Aggiorna il laser dopo aver modificato le dimensioni
+                synchronized (this) {
+                    try {
+                        // Wait for 1 milliseconds or until notified
+                        wait(1);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+            gasterBlaster.setIcon(new ImageIcon("Assets/Images/GasterBlasterClosedDx.png"));
+
+            try {
+                TimeUnit.MILLISECONDS.sleep(500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            jlpAtt.remove(laser);
+            jpMain.repaint();
+            jpMain.revalidate();
+            try {
+                TimeUnit.MILLISECONDS.sleep(500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            jpGastDx.remove(gasterBlaster);
+            jpMain.repaint();
+            jpMain.revalidate();
+            active.set(false);
+            collisionT.interrupt();
+
+        }).start();
+    }
+
+    public void attack2up(int x, int y, int width){
+        JLabel laser = new JLabel();
+        laser.setOpaque(true);
+        laser.setBackground(Color.white);
+        laser.setBounds(x, y, width, 0);
+        //laser.setBorder(BorderFactory.createLineBorder(Color.blue, 5));
+        jlpAtt.add(laser, JLayeredPane.POPUP_LAYER);
+
+        JLabel gasterBlaster = new JLabel(new ImageIcon("Assets/Images/GasterBlasterClosedUp.png"));
+        gasterBlaster.setBounds(x, jpGastUp.getHeight()-128, width, 128);
+        //gasterBlaster.setBorder(BorderFactory.createLineBorder(Color.CYAN, 5));
+
+        AtomicBoolean active = new AtomicBoolean(true);
+        Thread collisionT = new Thread(new Collision(hp, jlHeart, laser, gameRunning, active));
+        collisionT.start();
+
+        jpGastUp.add(gasterBlaster);
+        jpGastUp.repaint();
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        gasterBlaster.setIcon(new ImageIcon("Assets/Images/GasterBlasterOpenedUp.png"));
+
+        try {
+            AudioInputStream audio = AudioSystem.getAudioInputStream(new File("Assets/Audio/Sounds/Blaster.wav").getAbsoluteFile());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audio);
+            clip.start();
+        } catch (IOException | LineUnavailableException | UnsupportedAudioFileException ex) {
+            System.out.println("Errore nella riproduzione, controllare il formato audio o la presenza di esso");
+        }
+
+        new Thread(() -> {
+            while (laser.getHeight() < jlpAtt.getHeight()) {
+                laser.setSize(laser.getWidth() , laser.getHeight()+1);
+                laser.repaint(); // Aggiorna il laser dopo aver modificato le dimensioni
+                synchronized (this) {
+                    try {
+                        // Wait for 1 milliseconds or until notified
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+            gasterBlaster.setIcon(new ImageIcon("Assets/Images/GasterBlasterClosedUp.png"));
+
+            try {
+                TimeUnit.MILLISECONDS.sleep(500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            jlpAtt.remove(laser);
+            jpMain.repaint();
+            jpMain.revalidate();
+            try {
+                TimeUnit.MILLISECONDS.sleep(500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            jpGastUp.remove(gasterBlaster);
+            jpMain.repaint();
+            jpMain.revalidate();
+            active.set(false);
+            collisionT.interrupt();
+
+        }).start();
+    }
 }
+
+
