@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.Timer;
@@ -29,7 +30,7 @@ public class TuMa extends JFrame implements MouseListener {
     private JLabel jlSans, jlHeart, jlHp;
     private MyKeyListener keyListener;
     private final AtomicBoolean gameRunning = new AtomicBoolean(true);
-    private final AtomicInteger hp = new AtomicInteger(100);
+    private final AtomicInteger hp = new AtomicInteger(500);
     private Clip clip;
 
     public TuMa() {
@@ -102,10 +103,10 @@ public class TuMa extends JFrame implements MouseListener {
         jpSans.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         jlpAtt.setBorder(BorderFactory.createLineBorder(Color.white, 10));
-        //jpAttTot.setBorder(BorderFactory.createLineBorder(Color.green, 10));
-        //jpGastSx.setBorder(BorderFactory.createLineBorder(Color.magenta, 10));
-        //jpGastDx.setBorder(BorderFactory.createLineBorder(Color.magenta, 10));
-        //jpGastUp.setBorder(BorderFactory.createLineBorder(Color.magenta, 10));
+        // jpAttTot.setBorder(BorderFactory.createLineBorder(Color.green, 10));
+        // jpGastSx.setBorder(BorderFactory.createLineBorder(Color.magenta, 10));
+        // jpGastDx.setBorder(BorderFactory.createLineBorder(Color.magenta, 10));
+        // jpGastUp.setBorder(BorderFactory.createLineBorder(Color.magenta, 10));
         // jlHeart.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
         jpSans.setMaximumSize(new Dimension(200, 250));
@@ -133,7 +134,6 @@ public class TuMa extends JFrame implements MouseListener {
         // Impostazione dei vincoli per far riempire i pannelli in altezza
         gbc.weighty = 0.5;
         gbc.fill = GridBagConstraints.BOTH;
-
 
         // Aggiunta di jpGastSx nella prima colonna
         gbc.gridx = 0;
@@ -170,7 +170,6 @@ public class TuMa extends JFrame implements MouseListener {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
-
     private void addListeners(){
         addKeyListener(keyListener);
         addMouseListener(this);
@@ -195,20 +194,18 @@ public class TuMa extends JFrame implements MouseListener {
         }).start();
     }
 
-    private void gameOver() {
-        clip.stop();
-        removeAll();
-        repaint();
-        revalidate();
-
-        setVisible(false);
+    public void gameOver() {
+        clip.close();
+        SwingUtilities.invokeLater(() -> {
+            Restart restart = new Restart();
+        });
         dispose();
-        Restart restart = new Restart();
     }
 
     private void startBattle() {
         CountDownLatch latch = new CountDownLatch(1);
 
+        System.out.println("Primo attacco");
         Thread bone1 = new Thread(new Attack(jpMain,hp,gameRunning,latch,1));
         bone1.start();
 
@@ -219,6 +216,9 @@ public class TuMa extends JFrame implements MouseListener {
             System.out.println(e);
         }
 
+
+        // COSA FA MOSTRARE IL CONTENUTO DEL FRAME AL SECONDO ATTACCO?
+        System.out.println("Secondo attacco");
         Thread blaster = new Thread(new Attack(jpMain,hp,gameRunning,latch,2));
         blaster.start();
     }
@@ -236,9 +236,6 @@ public class TuMa extends JFrame implements MouseListener {
 
         return backImg;
     }
-
-
-
 
 
 
