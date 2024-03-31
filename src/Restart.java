@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 
@@ -14,17 +15,16 @@ public class Restart extends JFrame implements ActionListener {
     private static final int HEIGHT = 960;
     private BackJPanel jpMain;
     private JButton jbRestart, jbQuit;
+    private Clip clip;
 
     public Restart(){
 
         jpMain = new BackJPanel(setBackground("Black.png"));
 
-
         setSize(WIDTH,HEIGHT);
 
-        Clip clip;
         try {
-            AudioInputStream audio = AudioSystem.getAudioInputStream(new File("Assets/Audio/dSounds/SoulBreak.wav").getAbsoluteFile());
+            AudioInputStream audio = AudioSystem.getAudioInputStream(new File("Assets/Audio/Sounds/SoulBreak.wav").getAbsoluteFile());
             clip = AudioSystem.getClip();
             clip.open(audio);
             clip.start();
@@ -36,17 +36,17 @@ public class Restart extends JFrame implements ActionListener {
         cuoreRotto.setBounds((WIDTH / 2) - 16, (HEIGHT / 2) - 16, 32, 32);
         JLabel goGaster = new JLabel(new ImageIcon("Assets/Images/goGaster.png"));
         goGaster.setBounds((WIDTH / 2) - 40, (HEIGHT / 3) - 104, 80, 208);
-        JLabel jlGay = null;
+        JLabel jlMortis = null;
 
         try {
             File fontFile = new File("Assets/Font/Undertale.ttf");
             Font undertaleFont = Font.createFont(Font.TRUETYPE_FONT, fontFile);
             undertaleFont = undertaleFont.deriveFont(Font.PLAIN, 28);
-            jlGay = new JLabel("Gay");
-            jlGay.setFont(undertaleFont);
-            jlGay.setForeground(Color.white);
-            jlGay.setBounds(goGaster.getX() + 90, goGaster.getY(), 50, 50);
-            jlGay.setOpaque(false);
+            jlMortis = new JLabel("Mortis");
+            jlMortis.setFont(undertaleFont);
+            jlMortis.setForeground(Color.white);
+            jlMortis.setBounds(goGaster.getX() + 90, goGaster.getY(), 50, 50);
+            jlMortis.setOpaque(false);
         } catch (IOException e) {
             System.out.println("Errore durante il caricamento del font: " + e.getMessage());
         } catch (FontFormatException e) {
@@ -71,7 +71,7 @@ public class Restart extends JFrame implements ActionListener {
 
         jpMain.setLayout(null);
         jpMain.add(goGaster);
-        jpMain.add(jlGay);
+        jpMain.add(jlMortis);
         jpMain.add(cuoreRotto);
         jpMain.add(jbRestart);
         jpMain.add(jbQuit);
@@ -94,13 +94,11 @@ public class Restart extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == jbRestart){
-            removeAll();
-            repaint();
-            revalidate();
-
-            setVisible(false);
-            dispose();
-            TuMa tuma = new TuMa();
+            SwingUtilities.invokeLater(() -> {
+                TuMa TuMaJF = new TuMa();
+            });
+            clip.close();
+            dispose(); // Rilascia le risorse e chiude il frame corrente
         } else {
             System.exit(0);
         }
@@ -119,5 +117,8 @@ public class Restart extends JFrame implements ActionListener {
 
         return backImg;
     }
+
 }
+
+
 

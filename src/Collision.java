@@ -40,21 +40,28 @@ public class Collision implements Runnable {
                     gameRunning.set(false);
                 }
 
-                if(clip == null){
+                if (clip == null) {
                     try {
                         audio = AudioSystem.getAudioInputStream(new File("Assets/Audio/Sounds/SoulDamage.wav").getAbsoluteFile());
                         clip = AudioSystem.getClip();
                         clip.open(audio);
-                    } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+                        clip.start();
 
-                if(!clip.isActive()){
-                    clip.start();
+                        clip.addLineListener(event -> {
+                            if (event.getType() == LineEvent.Type.STOP) {
+                                clip.close();
+                            }
+                        });
+                    } catch (IOException | LineUnavailableException | UnsupportedAudioFileException ex) {
+                        System.out.println("Errore nella riproduzione, controllare il formato audio o la presenza di esso");
+                    }
+
+                    if (!clip.isActive()) {
+                        clip.start();
+                    }
                 }
             }
         }
-    }
 
+    }
 }

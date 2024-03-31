@@ -81,9 +81,6 @@ public class Attack extends AWTHelper implements Runnable {
         JLabel bone = new JLabel(i);
         bone.setBounds(10, dy, 60, 10);
 
-        // System.out.println("jlpAtt: " + jlpAtt);
-        // System.out.println("jlHeart: " + jlHeart);
-
         jlpAtt.add(bone, JLayeredPane.POPUP_LAYER);
         AtomicBoolean active = new AtomicBoolean(true);
         Thread collisionT = new Thread(new Collision(hp, jlHeart, bone, gameRunning, active));
@@ -146,6 +143,12 @@ public class Attack extends AWTHelper implements Runnable {
             Clip clip = AudioSystem.getClip();
             clip.open(audio);
             clip.start();
+
+            clip.addLineListener(event -> {
+                if (event.getType() == LineEvent.Type.STOP) {
+                    clip.close();
+                }
+            });
         } catch (IOException | LineUnavailableException | UnsupportedAudioFileException ex) {
             System.out.println("Errore nella riproduzione, controllare il formato audio o la presenza di esso");
         }
@@ -156,7 +159,7 @@ public class Attack extends AWTHelper implements Runnable {
                 laser.repaint(); // Aggiorna il laser dopo aver modificato le dimensioni
                 synchronized (this) {
                     try {
-                        // Wait for 1 milliseconds or until notified
+                        // Wait for 1 millisecond or until notified
                         wait(1);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
